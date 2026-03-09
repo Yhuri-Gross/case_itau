@@ -1,6 +1,6 @@
 # Build folders
-Clientes.Api\obj
-Clientes.Api\bin
+**/bin/
+**/obj/
 
 # Visual Studio
 .vs/
