@@ -12,6 +12,15 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("DefaultConnection")
     ));
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
+});
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 
@@ -26,7 +35,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
 
-
+app.UseCors("AllowAngular");
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
