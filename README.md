@@ -149,7 +149,7 @@ dotnet test
 Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/seu-repositorio
+git clone https://github.com/Yhuri-Gross/case_itau
 ```
 
 Entre na pasta do projeto:
