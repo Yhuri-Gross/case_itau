@@ -24,6 +24,16 @@ public class AppDbContext : DbContext
             entity.Property(x => x.Email)
                 .IsRequired();
 
+            entity.Property(x => x.Senha)
+                .IsRequired();
+
+            entity.Property(x => x.Role)
+                .IsRequired()
+                .HasDefaultValue("User");
+
+            entity.Property(x => x.Saldo)
+                .HasColumnType("decimal(18,2)");
+
             entity.HasIndex(x => x.Email)
                 .IsUnique();
         });

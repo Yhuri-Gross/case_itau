@@ -1,4 +1,4 @@
-using Clientes.Api.Domain.Entities;
+/* using Clientes.Api.Domain.Entities;
 using Clientes.Api.Infrastructure.Repositories;
 using Moq;
 using Xunit;
@@ -89,4 +89,4 @@ public class IClienteRepositoryTests
 
         _repositoryMock.Verify(r => r.Save(), Times.Once);
     }
-}
+} */

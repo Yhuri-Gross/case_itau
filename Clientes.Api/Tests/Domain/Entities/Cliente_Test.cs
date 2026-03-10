@@ -1,79 +1,105 @@
 using Clientes.Api.Domain.Entities;
+using FluentAssertions;
 using Xunit;
 
-namespace Clientes.Tests.Domain.Entities;
+namespace Clientes.Api.Tests.Domain;
 
 public class ClienteTests
 {
     [Fact]
-    public void Constructor_DeveCriarClienteComSaldoZero()
+    public void Deve_Criar_Cliente_Com_Saldo_Inicial_Zero()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
 
-        Assert.Equal("Yhuri", cliente.Nome);
-        Assert.Equal("yhuri@email.com", cliente.Email);
-        Assert.Equal(0, cliente.Saldo);
+        cliente.Nome.Should().Be("Maria");
+        cliente.Email.Should().Be("maria@email.com");
+        cliente.Saldo.Should().Be(0);
+        cliente.Role.Should().Be("User");
     }
 
     [Fact]
-    public void Atualizar_DeveAlterarNomeEEmail()
+    public void Deve_Atualizar_Nome_E_Email()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
 
-        cliente.Atualizar("Novo Nome", "novo@email.com");
+        cliente.Atualizar("Joana", "joana@email.com");
 
-        Assert.Equal("Novo Nome", cliente.Nome);
-        Assert.Equal("novo@email.com", cliente.Email);
+        cliente.Nome.Should().Be("Joana");
+        cliente.Email.Should().Be("joana@email.com");
     }
 
     [Fact]
-    public void Depositar_DeveAdicionarSaldo()
+    public void Deve_Depositar_Valor_Valido()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
 
         cliente.Depositar(100);
 
-        Assert.Equal(100, cliente.Saldo);
+        cliente.Saldo.Should().Be(100);
     }
 
     [Fact]
-    public void Depositar_DeveLancarExcecao_QuandoValorInvalido()
+    public void Nao_Deve_Depositar_Valor_Menor_Ou_Igual_A_Zero()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
 
-        Assert.Throws<ArgumentException>(() => cliente.Depositar(0));
-        Assert.Throws<ArgumentException>(() => cliente.Depositar(-10));
+        var act = () => cliente.Depositar(0);
+
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("Valor de depósito inválido");
     }
 
     [Fact]
-    public void Sacar_DeveDiminuirSaldo()
+    public void Deve_Sacar_Valor_Valido()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
+        cliente.Depositar(200);
 
-        cliente.Depositar(100);
-        cliente.Sacar(40);
+        cliente.Sacar(50);
 
-        Assert.Equal(60, cliente.Saldo);
+        cliente.Saldo.Should().Be(150);
     }
 
     [Fact]
-    public void Sacar_DeveLancarExcecao_QuandoValorInvalido()
+    public void Nao_Deve_Sacar_Com_Saldo_Insuficiente()
     {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
-
-        cliente.Depositar(100);
-
-        Assert.Throws<ArgumentException>(() => cliente.Sacar(0));
-        Assert.Throws<ArgumentException>(() => cliente.Sacar(-10));
-    }
-
-    [Fact]
-    public void Sacar_DeveLancarExcecao_QuandoSaldoInsuficiente()
-    {
-        var cliente = new Cliente("Yhuri", "yhuri@email.com");
-
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
         cliente.Depositar(50);
 
-        Assert.Throws<InvalidOperationException>(() => cliente.Sacar(100));
+        var act = () => cliente.Sacar(100);
+
+        act.Should().Throw<InvalidOperationException>()
+            .WithMessage("Saldo insuficiente");
+    }
+
+    [Fact]
+    public void Nao_Deve_Sacar_Valor_Menor_Ou_Igual_A_Zero()
+    {
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
+
+        var act = () => cliente.Sacar(0);
+
+        act.Should().Throw<ArgumentException>()
+            .WithMessage("Valor de saque inválido");
+    }
+
+    [Fact]
+    public void Deve_Validar_Senha_Correta()
+    {
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
+
+        var resultado = cliente.ValidarSenha("123456");
+
+        resultado.Should().BeTrue();
+    }
+
+    [Fact]
+    public void Deve_Invalidar_Senha_Incorreta()
+    {
+        var cliente = new Cliente("Maria", "maria@email.com", "123456");
+
+        var resultado = cliente.ValidarSenha("outra-senha");
+
+        resultado.Should().BeFalse();
     }
 }

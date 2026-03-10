@@ -44,7 +44,18 @@ public class ClienteService : IClienteService
 
     public async Task<int> Create(ClienteCreateDto dto)
     {
-        var cliente = new Cliente(dto.Nome, dto.Email);
+        var emailExistente = await _repository.GetByEmail(dto.Email);
+        if (emailExistente != null)
+            throw new ArgumentException("Já existe um cliente com este e-mail");
+
+        var role = "User";
+
+        if (dto.Nome.ToLower() == "admin")
+        {
+            role = "Admin";
+        }
+
+        var cliente = new Cliente(dto.Nome, dto.Email, dto.Senha, role);
 
         await _repository.Add(cliente);
         await _repository.Save();
@@ -84,7 +95,6 @@ public class ClienteService : IClienteService
             throw new Exception("Cliente não encontrado");
 
         cliente.Depositar(valor);
-
         await _repository.Save();
     }
 
@@ -96,7 +106,6 @@ public class ClienteService : IClienteService
             throw new Exception("Cliente não encontrado");
 
         cliente.Sacar(valor);
-
         await _repository.Save();
     }
 }

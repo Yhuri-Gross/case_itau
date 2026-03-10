@@ -1,3 +1,5 @@
+using BCrypt.Net;
+
 namespace Clientes.Api.Domain.Entities;
 
 public class Cliente
@@ -10,11 +12,24 @@ public class Cliente
 
     public decimal Saldo { get; private set; }
 
-    public Cliente(string nome, string email)
+    public string Senha { get; private set; }
+
+    public string Role { get; private set; }
+
+    protected Cliente() { }
+
+    public Cliente(string nome, string email, string senha, string role = "User")
     {
         Nome = nome;
         Email = email;
+        Senha = BCrypt.Net.BCrypt.HashPassword(senha);
+        Role = role;
         Saldo = 0;
+    }
+
+    public bool ValidarSenha(string senha)
+    {
+        return BCrypt.Net.BCrypt.Verify(senha, Senha);
     }
 
     public void Atualizar(string nome, string email)

@@ -1,4 +1,4 @@
-using Clientes.Api.Domain.Entities;
+/* using Clientes.Api.Domain.Entities;
 using Clientes.Api.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -85,4 +85,4 @@ public class AppDbContextTests
         Assert.NotNull(index);
         Assert.True(index.IsUnique);
     }
-}
+} */

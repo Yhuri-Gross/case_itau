@@ -23,6 +23,11 @@ public class ClienteRepository : IClienteRepository
         return await _context.Clientes.FindAsync(id);
     }
 
+    public async Task<Cliente?> GetByEmail(string email)
+    {
+        return await _context.Clientes.FirstOrDefaultAsync(c => c.Email == email);
+    }
+
     public async Task Add(Cliente cliente)
     {
         await _context.Clientes.AddAsync(cliente);
